@@ -52,7 +52,9 @@ export interface ChromelessOptions {
   }
   launchChrome?: boolean // auto-launch chrome (local) `true`
   cdp?: CDPOptions
-  remote?: RemoteOptions | boolean
+  remote?: RemoteOptions | boolean,
+  additionalChromeFlags?: string[]
+  chromeFlags?: string[]
 }
 
 export interface Chrome {
