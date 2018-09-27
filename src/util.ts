@@ -10,6 +10,7 @@ import {
   BoxModel,
   Viewport,
   Headers,
+  ScreenshotOptions,
 } from './types'
 import * as CDP from 'chrome-remote-interface'
 import * as AWS from 'aws-sdk'
@@ -190,13 +191,20 @@ export async function getClientRect(client, selector): Promise<ClientRect> {
   return JSON.parse(result.result.value) as ClientRect
 }
 
-export async function click(client: Client, selector: string, scale: number) {
+export async function click(
+  client: Client,
+  selector: string,
+  scale: number,
+  x?: number,
+  y?: number,
+) {
   const clientRect = await getClientRect(client, selector)
   const { Input } = client
-
+  if (x === undefined) x = clientRect.width / 2
+  if (y === undefined) y = clientRect.height / 2
   const options = {
-    x: Math.round((clientRect.left + clientRect.width / 2) * scale),
-    y: Math.round((clientRect.top + clientRect.height / 2) * scale),
+    x: Math.round((clientRect.left + x) * scale),
+    y: Math.round((clientRect.top + y) * scale),
     button: 'left',
     clickCount: 1,
   }
@@ -503,6 +511,7 @@ export function boxModelToViewPort(model: BoxModel, scale: number): Viewport {
 export async function screenshot(
   client: Client,
   selector: string,
+  options: ScreenshotOptions,
 ): Promise<string> {
   const { Page } = client
 
@@ -516,9 +525,13 @@ export async function screenshot(
     const model = await getBoxModel(client, selector)
     captureScreenshotOptions.clip = boxModelToViewPort(model, 1)
   }
-
+  if (options && options.omitBackground)
+    client.Emulation.setDefaultBackgroundColorOverride({
+      color: { r: 0, g: 0, b: 0, a: 0 },
+    })
   const screenshot = await Page.captureScreenshot(captureScreenshotOptions)
-
+  if (options && options.omitBackground)
+    client.Emulation.setDefaultBackgroundColorOverride()
   return screenshot.data
 }
 
@@ -655,6 +668,9 @@ const s3ContentTypes = {
   'application/pdf': {
     extension: 'pdf',
   },
+  'text/html': {
+    extension: 'html',
+  },
 }
 
 export async function uploadToS3(
@@ -673,7 +689,7 @@ export async function uploadToS3(
       Key: s3Path,
       ContentType: contentType,
       ACL: getS3FilesPermissions(),
-      Body: Buffer.from(data, 'base64'),
+      Body: Buffer.from(data, contentType === 'text/html' ? 'utf8' : 'base64'),
     })
     .promise()
 

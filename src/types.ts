@@ -89,6 +89,8 @@ export type Command =
   | {
       type: 'click'
       selector: string
+      x?: number
+      y?: number
     }
   | {
       type: 'returnCode'
@@ -241,6 +243,7 @@ export interface PdfOptions {
 
 export interface ScreenshotOptions {
   filePath?: string
+  omitBackground?: boolean
 }
 
 export type Quad = Array<number>

@@ -1,3 +1,6 @@
+*This project is deprecated in favor for [Puppeteer](https://github.com/GoogleChrome/puppeteer). 
+Thanks to all the contributors who made this project possible.*
+
 # Chromeless
 
 [![npm](https://img.shields.io/npm/v/chromeless.svg)](https://npmjs.com/package/chromeless)
@@ -150,7 +153,7 @@ const chromeless = new Chromeless({
 **Chrome methods**
 - [`goto(url: string, timeout?: number)`](docs/api.md#api-goto)
 - [`setUserAgent(useragent: string)`](docs/api.md#api-setUserAgent)
-- [`click(selector: string)`](docs/api.md#api-click)
+- [`click(selector: string, x?: number, y?: number)`](docs/api.md#api-click)
 - [`wait(timeout: number)`](docs/api.md#api-wait-timeout)
 - [`wait(selector: string)`](docs/api.md#api-wait-selector)
 - [`wait(fn: (...args: any[]) => boolean, ...args: any[])`] - Not implemented yet
