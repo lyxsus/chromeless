@@ -36,9 +36,11 @@ export default class LocalChrome implements Chrome {
 
   private async startChrome(): Promise<Client> {
     const { port } = this.options.cdp
+    const additionalChromeFlags = this.options.additionalChromeFlags || [];
+
     this.chromeInstance = await launch({
       logLevel: this.options.debug ? 'info' : 'silent',
-      chromeFlags: [
+      chromeFlags: this.options.chromeFlags || [
         // Do not render scroll bars
         '--hide-scrollbars',
 
@@ -61,6 +63,7 @@ export default class LocalChrome implements Chrome {
         '--mute-audio',
         // Skip first run wizards
         '--no-first-run',
+        ...additionalChromeFlags
       ],
       port,
     })

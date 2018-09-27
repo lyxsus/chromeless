@@ -1,6 +1,6 @@
 {
-  "name": "chromeless",
-  "version": "1.4.0",
+  "name": "@lyxsus/chromeless",
+  "version": "1.4.1",
   "description": "🖥 Chrome automation made simple. Runs locally or headless on AWS Lambda.",
   "homepage": "https://github.com/graphcool/chromeless",
   "license": "MIT",
